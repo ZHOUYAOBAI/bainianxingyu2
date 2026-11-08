@@ -313,6 +313,18 @@ button{font-family:inherit;color:inherit;}
   font-size:14.5px;color:var(--ink-soft);line-height:1.95;max-width:17em;
 }
 .syn-text p{margin:0 0 1.35em;font-size:clamp(16.5px,1.35vw,18.5px);line-height:1.95;text-align:justify;}
+
+/* ---------- 01 简介：开篇导读 ---------- */
+.syn-text .syn-lead{
+  margin:0 0 clamp(28px,3vw,42px);padding-bottom:clamp(24px,2.6vw,34px);
+  border-bottom:1px solid var(--paper-line);
+}
+.syn-text .syn-lead .sl-k{
+  font-size:clamp(21px,1.8vw,25px);font-weight:700;line-height:1.55;
+  color:var(--crimson);letter-spacing:.03em;margin:0 0 20px;text-align:left;
+}
+.syn-text .syn-lead p{font-size:clamp(17px,1.3vw,19px);line-height:1.95;margin:0 0 .9em;color:var(--ink);}
+.syn-text .syn-lead p:last-child{margin-bottom:0;color:var(--ink-soft);}
 .pull{
   margin:clamp(30px,5vh,48px) 0 0;padding:26px 0 26px 26px;
   border-left:2px solid var(--blood);
