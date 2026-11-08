@@ -284,6 +284,8 @@ button{font-family:inherit;color:inherit;}
   font-family:var(--sans);font-size:11px;letter-spacing:.2em;color:var(--blood);
   padding-top:10px;
 }
+.sec-title .who{font-size:1.36em;letter-spacing:.04em;color:var(--blood);}
+br.mbr{display:none;}
 .sec-title{
   font-size:clamp(30px,4.6vw,60px);line-height:1.24;font-weight:700;
   margin:0;letter-spacing:.01em;
@@ -989,6 +991,8 @@ button{font-family:inherit;color:inherit;}
 
   /* 首屏：图片全宽，图注改为上下两行 */
   .hero-figure{width:100%;margin:0;}
+  br.mbr{display:inline;}
+  #team .sec-title{font-size:clamp(26px,7.4vw,34px);line-height:1.28;}
   .hero-grid{padding-top:18px;gap:18px;}
   .hero-caption{flex-direction:column;gap:3px;margin-top:10px;}
   .hero-caption .num{font-size:10.5px;letter-spacing:.06em;line-height:1.7;}
