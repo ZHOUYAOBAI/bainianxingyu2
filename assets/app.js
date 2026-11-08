@@ -243,6 +243,61 @@
     play();
   }
 
+
+  /* ---------- 8. demo 试听 ---------- */
+  function initDemo() {
+    var rows = Array.prototype.slice.call(document.querySelectorAll(".arow"));
+    if (!rows.length) return;
+
+    var audio = new Audio();
+    audio.preload = "none";
+    var current = null;
+
+    function fmt(t) {
+      if (!t || !isFinite(t)) return "0:00";
+      var m = Math.floor(t / 60), sec = Math.floor(t % 60);
+      return m + ":" + (sec < 10 ? "0" : "") + sec;
+    }
+
+    function reset(row) {
+      row.classList.remove("is-playing");
+      var bar = row.querySelector(".abar i");
+      if (bar) bar.style.width = "0%";
+      var tm = row.querySelector(".atime");
+      if (tm) tm.textContent = tm.dataset.dur || tm.textContent;
+    }
+
+    rows.forEach(function (row) {
+      var tm = row.querySelector(".atime");
+      tm.dataset.dur = tm.textContent;
+      row.querySelector(".aplay").addEventListener("click", function () {
+        if (current === row) {
+          if (audio.paused) { audio.play(); row.classList.add("is-playing"); }
+          else { audio.pause(); row.classList.remove("is-playing"); }
+          return;
+        }
+        if (current) { audio.pause(); reset(current); }
+        current = row;
+        audio.src = row.dataset.src;
+        row.classList.add("is-playing");
+        audio.play().catch(function () { reset(row); });
+      });
+    });
+
+    audio.addEventListener("timeupdate", function () {
+      if (!current) return;
+      var pct = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
+      var bar = current.querySelector(".abar i");
+      if (bar) bar.style.width = pct.toFixed(2) + "%";
+      var tm = current.querySelector(".atime");
+      if (tm) tm.textContent = fmt(audio.currentTime) + " / " + fmt(audio.duration || 0);
+    });
+
+    audio.addEventListener("ended", function () {
+      if (current) { reset(current); current = null; }
+    });
+  }
+
   function boot() {
     initReveal();
     initLyrics();
@@ -251,6 +306,7 @@
     initInterlude();
     initNavState();
     initPlate();
+    initDemo();
   }
 
   if (document.readyState === "loading") {
