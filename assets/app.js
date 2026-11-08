@@ -82,7 +82,9 @@
         return filter === "全部" || n.cls === filter;
       });
       body.innerHTML = rows.map(function (n) {
-        return '<tr>' +
+        var meta = [n.type, n.voice].filter(function (x) { return x && x !== "—"; }).join(" · ");
+        var tech = [n.key, n.meter, n.tempo, n.dur].filter(function (x) { return x && x !== "—"; }).join(" · ");
+        return '<tr data-meta="' + esc(meta) + '" data-tech="' + esc(tech) + '">' +
           '<td class="no">No.' + esc(n.no) + '</td>' +
           '<td class="tt">' + esc(n.title) + '</td>' +
           '<td class="ty">' + esc(n.type) + '</td>' +
