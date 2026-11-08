@@ -7,7 +7,160 @@
 <meta name="description" content="《百年星语·破晓1928》剧本展示站：三幕十四场，28 首唱段，1928 至 2026 双时空。云南本土红色题材音乐剧，编剧白耀洲、孙子岚。">
 <link rel="preconnect" href="https://miaoda.feishu.cn">
 <link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Serif+SC:wght@400;500;600;700;900&family=Noto+Sans+SC:wght@300;400;500&display=swap">
-<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/style.css?v=20261109">
+<style>
+/* ============ 信封访问门 ============ */
+html.is-locked{overflow:hidden;}
+.gate{
+  position:fixed;inset:0;z-index:900;
+  display:flex;align-items:center;justify-content:center;
+  background:
+    radial-gradient(120% 80% at 50% 18%,rgba(120,32,44,.55) 0,rgba(58,14,23,.9) 46%,rgba(26,6,11,.97) 100%),
+    #26090D;
+  transition:opacity .9s var(--ease),visibility .9s;
+}
+.gate.is-glowing{background:
+    radial-gradient(120% 80% at 50% 30%,rgba(190,120,50,.42) 0,rgba(90,28,30,.9) 50%,rgba(26,6,11,.97) 100%),#26090D;}
+.gate-inner{position:relative;width:min(92vw,760px);display:flex;flex-direction:column;align-items:center;gap:clamp(26px,4vh,46px);}
+.gate.is-done{opacity:0;visibility:hidden;pointer-events:none;}
+
+/* 信封主体 */
+.envelope{
+  position:relative;width:clamp(280px,42vw,440px);aspect-ratio:1.52/1;
+  perspective:1400px;filter:drop-shadow(0 22px 34px rgba(0,0,0,.55));
+  transition:transform 1.1s var(--ease),opacity 1s var(--ease);
+}
+.env-body{
+  position:absolute;inset:0;z-index:1;border-radius:3px;overflow:hidden;
+  background:linear-gradient(168deg,#F3E7D8 0,#E7D6C2 58%,#DCC8B2 100%);
+  border:1px solid rgba(107,22,32,.22);
+  box-shadow:inset 0 0 0 6px rgba(255,253,247,.5),inset 0 0 44px rgba(120,74,44,.18);
+}
+/* 信封折线（下侧 V 形） */
+.env-lines{
+  position:absolute;inset:0;
+  background:
+    linear-gradient(to bottom right,transparent 49.6%,rgba(122,84,54,.28) 50%,transparent 50.4%) bottom left/61% 62% no-repeat,
+    linear-gradient(to bottom left,transparent 49.6%,rgba(122,84,54,.28) 50%,transparent 50.4%) bottom right/61% 62% no-repeat;
+  opacity:.9;
+}
+/* 封口（打开时向上翻） */
+.env-flap{
+  position:absolute;top:0;left:0;right:0;height:56%;z-index:4;
+  transform-origin:top center;transform:rotateX(0deg);
+  background:linear-gradient(180deg,#F7ECE0 0,#E9D8C4 62%,#DDC7AF 100%);
+  clip-path:polygon(0 0,100% 0,50% 100%);
+  box-shadow:0 10px 18px rgba(90,50,30,.18);
+  transition:transform 1.25s cubic-bezier(.55,.06,.3,1);
+}
+.envelope.is-open .env-flap{transform:rotateX(-172deg);}
+/* 地址行 */
+.env-addr{
+  position:absolute;left:0;right:0;top:56%;z-index:2;
+  padding:0 12%;text-align:center;
+}
+.env-to{
+  margin:0 0 10px;font-size:clamp(17px,2.1vw,25px);font-weight:700;letter-spacing:.24em;
+  color:#6B1620;line-height:1.5;
+}
+.env-to em{font-style:normal;color:#9C2028;}
+.env-from{
+  margin:0;font-family:var(--sans);font-size:clamp(10px,.95vw,12px);
+  letter-spacing:.12em;color:rgba(42,21,24,.5);line-height:1.7;
+}
+/* 火漆印 */
+.env-seal{
+  position:absolute;left:50%;bottom:-16px;transform:translateX(-50%) rotate(-4deg);z-index:5;
+  width:clamp(46px,4.4vw,58px);height:clamp(46px,4.4vw,58px);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(circle at 34% 28%,#C23B45 0,#9C2028 44%,#6E1218 100%);
+  box-shadow:0 6px 14px rgba(60,8,12,.5),inset 0 0 0 2px rgba(255,214,196,.28),inset 0 0 14px rgba(60,4,8,.6);
+  transition:transform .6s var(--ease),opacity .6s var(--ease);
+}
+.env-seal span{
+  font-size:clamp(16px,1.5vw,19px);font-weight:700;color:#FBE8D8;letter-spacing:.1em;
+}
+.envelope.is-open .env-seal{transform:translateX(-50%) rotate(-4deg) scale(.9);opacity:.35;}
+
+/* 表单 */
+.gate-form{text-align:center;transition:opacity .6s var(--ease),transform .6s var(--ease);}
+.gate-form.is-gone{opacity:0;transform:translateY(-10px);pointer-events:none;}
+.gate-form label{
+  display:block;margin-bottom:14px;font-family:var(--sans);
+  font-size:11px;letter-spacing:.34em;color:rgba(246,231,220,.62);
+}
+.gate-row{display:flex;align-items:center;justify-content:center;gap:10px;}
+#gateCode{
+  width:clamp(180px,22vw,230px);padding:11px 16px;text-align:center;
+  font-family:var(--sans);font-size:15px;letter-spacing:.26em;color:#FBF0E5;
+  background:rgba(255,240,228,.07);border:1px solid rgba(246,231,220,.34);border-radius:2px;
+  outline:none;transition:border-color .35s var(--ease),background .35s var(--ease);
+}
+#gateCode::placeholder{color:rgba(246,231,220,.34);letter-spacing:.2em;font-size:12px;}
+#gateCode:focus{border-color:rgba(243,205,150,.8);background:rgba(255,240,228,.12);}
+#gateBtn{
+  padding:11px 22px;font-family:var(--serif);font-size:14px;font-weight:700;letter-spacing:.22em;
+  color:#3A1017;background:linear-gradient(180deg,#F2D9A8,#DBAE6B 60%,#C08B45);
+  border:none;border-radius:2px;cursor:pointer;
+  box-shadow:0 6px 16px rgba(0,0,0,.34);
+  transition:transform .3s var(--ease),filter .3s var(--ease);
+}
+#gateBtn:hover,#gateBtn:focus-visible{transform:translateY(-1px);filter:brightness(1.06);}
+#gateBtn:active{transform:translateY(0);}
+.gate-hint{
+  margin:16px 0 0;font-family:var(--sans);font-size:11.5px;letter-spacing:.14em;
+  color:rgba(246,231,220,.46);transition:color .3s var(--ease);
+}
+.gate-hint.is-error{color:#F0A9A0;}
+.gate.is-shake .envelope{animation:envShake .5s var(--ease);}
+@keyframes envShake{
+  0%,100%{transform:translateX(0);}
+  20%{transform:translateX(-9px);}
+  45%{transform:translateX(8px);}
+  70%{transform:translateX(-4px);}
+}
+
+/* 金字 */
+.gate-reveal{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:100%;text-align:center;pointer-events:none;opacity:0;will-change:transform,opacity;
+}
+.gate-reveal p{
+  margin:0;font-weight:900;letter-spacing:.08em;line-height:1.24;
+  color:#EFC57B;
+  text-shadow:0 0 22px rgba(214,158,74,.55),0 4px 10px rgba(0,0,0,.45);
+}
+@supports ((-webkit-background-clip:text) or (background-clip:text)){
+  .gate-reveal p{
+    background:linear-gradient(178deg,#FFF6DC 0,#F3D79B 24%,#D8A85F 46%,#B37B34 62%,#F7E3B4 82%,#D9A961 100%);
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+}
+.gr-l1{font-size:clamp(42px,8.4vw,116px);}
+.gr-l2{font-size:clamp(42px,8.4vw,116px);margin-top:clamp(6px,.8vh,12px);}
+.gate-reveal.is-play{opacity:1;animation:goldIn 2.1s cubic-bezier(.16,.84,.28,1) forwards;}
+@keyframes goldIn{
+  0%{transform:translate(-50%,-50%) scale(.3);opacity:0;}
+  30%{opacity:.55;}
+  64%{opacity:1;transform:translate(-50%,-50%) scale(1.16);}
+  100%{opacity:1;transform:translate(-50%,-50%) scale(1);}
+}
+
+@media (max-width:680px){
+  .envelope{width:min(80vw,340px);}
+  .env-addr{top:52%;}
+  .env-to{font-size:16px;letter-spacing:.16em;}
+  .gate-row{flex-wrap:wrap;gap:10px;}
+  #gateCode{width:180px;}
+  .gr-l1,.gr-l2{font-size:clamp(38px,13.5vw,64px);}
+}
+@media (prefers-reduced-motion:reduce){
+  .envelope,.env-flap,.gate,.gate-form,.gate-reveal{transition-duration:.01ms;animation-duration:.01ms;}
+  .gate-reveal.is-play{animation:none;opacity:1;}
+}
+
+</style>
 </head>
 <body>
 
