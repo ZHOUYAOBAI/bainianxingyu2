@@ -78,6 +78,7 @@ button{font-family:inherit;color:inherit;}
   max-width:var(--max);margin:0 auto;padding:0 var(--pad);
   height:62px;display:flex;align-items:center;justify-content:space-between;gap:24px;
 }
+.nav-links{margin-left:auto;}
 .nav-brand{display:flex;align-items:baseline;gap:12px;}
 .nav-brand::before{
   content:"";width:6px;height:6px;background:var(--blood);border-radius:0;
@@ -87,7 +88,7 @@ button{font-family:inherit;color:inherit;}
 .nav-brand span{font-family:var(--sans);font-size:10px;letter-spacing:.2em;color:var(--ink-faint);}
 .nav-links{display:flex;align-items:center;gap:26px;}
 .nav-links a{
-  font-family:var(--sans);font-size:12px;letter-spacing:.1em;color:var(--ink-soft);
+  font-family:var(--serif);font-size:13.5px;letter-spacing:.18em;color:var(--ink-soft);font-weight:500;
   position:relative;padding:4px 0;transition:color .35s var(--ease);
 }
 .nav-links a::after{
