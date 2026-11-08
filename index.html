@@ -55,7 +55,8 @@ html.is-locked{overflow:hidden;}
   box-shadow:0 10px 18px rgba(90,50,30,.18);
   transition:transform 1.25s cubic-bezier(.55,.06,.3,1);
 }
-.envelope.is-open .env-flap{transform:rotateX(-172deg);}
+.envelope.is-open .env-flap{transform:rotateX(-179deg);}
+.env-flap{backface-visibility:hidden;-webkit-backface-visibility:hidden;}
 /* 地址行 */
 .env-addr{
   position:absolute;left:0;right:0;top:56%;z-index:2;
@@ -162,12 +163,25 @@ html.is-locked{overflow:hidden;}
   .gate-reveal.is-play{animation:none;opacity:1;}
 }
 
+
+/* 金粉与光晕 */
+.gate-aura{
+  position:absolute;left:50%;top:50%;width:min(150vw,1040px);height:min(150vw,1040px);
+  transform:translate(-50%,-50%) scale(.22);opacity:0;z-index:2;pointer-events:none;
+  background:radial-gradient(circle at 50% 50%,rgba(255,226,166,.36) 0,rgba(234,178,92,.20) 24%,rgba(198,128,52,.08) 46%,rgba(120,60,20,0) 70%);
+  transition:transform 3.2s cubic-bezier(.16,.84,.28,1),opacity 2.6s ease;
+}
+.gate.is-casting .gate-aura{transform:translate(-50%,-50%) scale(1);opacity:1;}
+.gate-dust{position:absolute;inset:0;z-index:6;pointer-events:none;}
+.gate.is-shake .gate-dust{display:none;}
 </style>
 </head>
 <body>
 
 <div class="gate" id="gate" aria-modal="true" role="dialog" aria-label="内容访问验证">
-  <div class="gate-inner">
+  <div class="gate-aura" aria-hidden="true"></div>
+    <canvas class="gate-dust" id="gateDust" aria-hidden="true"></canvas>
+    <div class="gate-inner">
     <div class="envelope" id="envelope">
       <div class="env-body">
         <div class="env-lines" aria-hidden="true"></div>
