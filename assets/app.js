@@ -193,7 +193,7 @@
         if (!a) return;
         if (entry.isIntersecting) {
           links.forEach(function (l) { l.style.color = ""; });
-          a.style.color = "#2A1518";
+          a.style.color = "#6B1620";
         }
       });
     }, { rootMargin: "-45% 0px -50% 0px" });
