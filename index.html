@@ -11,6 +11,51 @@
 </head>
 <body>
 
+<div class="gate" id="gate" aria-modal="true" role="dialog" aria-label="内容访问验证">
+  <div class="gate-inner">
+    <div class="envelope" id="envelope">
+      <div class="env-body">
+        <div class="env-lines" aria-hidden="true"></div>
+        <div class="env-addr">
+          <p class="env-to">尹世堂校长<em>亲启</em></p>
+          <p class="env-from">云南民族大学马笛红色音乐剧原创团队 · 敬呈</p>
+        </div>
+      </div>
+      <div class="env-flap" id="envFlap" aria-hidden="true"></div>
+      <div class="env-seal" aria-hidden="true"><span>启</span></div>
+    </div>
+
+    <div class="gate-form" id="gateForm">
+      <label for="gateCode">请输入访问密码</label>
+      <div class="gate-row">
+        <input id="gateCode" type="password" inputmode="numeric" autocomplete="off" maxlength="8" placeholder="八位密码">
+        <button id="gateBtn" type="button">拆 信</button>
+      </div>
+      <p class="gate-hint" id="gateHint">本页为剧本样稿，仅限受邀方查阅</p>
+    </div>
+
+    <div class="gate-reveal" id="gateReveal" aria-hidden="true">
+      <p class="gr-l1">星火永不灭</p>
+      <p class="gr-l2">精神永传承</p>
+    </div>
+  </div>
+</div>
+
+
+<script>
+(function(){
+  try{
+    if(sessionStorage.getItem("bx1928_unlocked")==="1"){
+      document.documentElement.classList.add("is-unlocked");
+      var g=document.getElementById("gate");
+      if(g){g.classList.add("is-done");}
+    }else{
+      document.documentElement.classList.add("is-locked");
+    }
+  }catch(e){document.documentElement.classList.add("is-locked");}
+})();
+</script>
+
 <header class="nav">
   <div class="nav-inner">
     <a class="nav-brand" href="#top">

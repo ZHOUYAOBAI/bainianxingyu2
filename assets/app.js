@@ -389,7 +389,65 @@
     });
   }
 
+  /* ---------- 信封访问门 ---------- */
+  function initGate() {
+    var gate = document.getElementById("gate");
+    if (!gate) return;
+    var envelope = document.getElementById("envelope");
+    var form = document.getElementById("gateForm");
+    var reveal = document.getElementById("gateReveal");
+    var input = document.getElementById("gateCode");
+    var btn = document.getElementById("gateBtn");
+    var hint = document.getElementById("gateHint");
+    var PASS = "19281314";
+    var busy = false;
+
+    function unlock() {
+      busy = true;
+      try { sessionStorage.setItem("bx1928_unlocked", "1"); } catch (e) {}
+      form.classList.add("is-gone");
+      gate.classList.add("is-glowing");
+      envelope.classList.add("is-open");
+      setTimeout(function () {
+        envelope.style.opacity = "0";
+        envelope.style.transform = "translateY(-8%) scale(.94)";
+      }, 1500);
+      setTimeout(function () {
+        reveal.classList.add("is-play");
+      }, 1900);
+      setTimeout(function () {
+        gate.classList.add("is-done");
+        document.documentElement.classList.remove("is-locked");
+        document.documentElement.classList.add("is-unlocked");
+        window.scrollTo(0, 0);
+      }, 4600);
+    }
+
+    function submit() {
+      if (busy) return;
+      var val = (input.value || "").replace(/\s/g, "");
+      if (val === PASS) { unlock(); return; }
+      gate.classList.remove("is-shake");
+      void gate.offsetWidth;
+      gate.classList.add("is-shake");
+      hint.textContent = "密码不对，请核对后再试";
+      hint.classList.add("is-error");
+      input.select();
+    }
+
+    btn.addEventListener("click", submit);
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") { e.preventDefault(); submit(); }
+    });
+    input.addEventListener("input", function () {
+      hint.textContent = "本页为剧本样稿，仅限受邀方查阅";
+      hint.classList.remove("is-error");
+    });
+    setTimeout(function () { try { input.focus({ preventScroll: true }); } catch (e) {} }, 300);
+  }
+
   function boot() {
+    initGate();
     initReveal();
     initLyrics();
     initScore();
