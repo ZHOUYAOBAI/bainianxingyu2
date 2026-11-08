@@ -64,5 +64,6 @@ python3 -m http.server 8788
 ## 状态
 
 - 已完成：读剧本 → 设计推导 → 结构规划 → 构建 → 本地预览与逐屏检查（桌面 1440 / 手机 390）。
-- 未做：GitHub 推送。按约定，需要剧方确认剧本呈现与视觉后才推。
+- 已上线：https://zhouyaobai.github.io/bainianxingyu2/ （GitHub Pages，main 分支根目录，仓库 ZHOUYAOBAI/bainianxingyu2）。
+- 站点含 00 项目阐述（五条创作意义＋四格数字）与 03 分幕后的场次一览表（三幕十四场＋终场，标注为汇报版划分）。
 - 本页是妙搭平台产物：单 html + 本地相对路径资源，可直接放任意静态托管。
