@@ -746,6 +746,9 @@ button{font-family:inherit;color:inherit;}
 .sec--wine .stat b,.sec--wine h2,.sec--wine h3,.sec--wine h4{color:var(--ink);}
 .sec--wine .pull p{color:var(--ink);}
 .sec--wine .syn-kicker{border-right-color:rgba(244,228,216,.28);}
+.sec--wine .idx{color:#E8AFA7;}
+.sec--wine .syn-aside .kicker{color:#F1DCD1;}
+.sec--wine .sec-line{background:linear-gradient(to right,rgba(232,175,167,.95) 0,rgba(244,228,216,.25) 40%,rgba(244,228,216,.08) 100%);}
 
 @media (max-width:1080px){
   .hero-grid{grid-template-columns:1fr;}
