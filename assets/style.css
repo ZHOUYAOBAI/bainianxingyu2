@@ -84,11 +84,11 @@ button{font-family:inherit;color:inherit;}
   content:"";width:6px;height:6px;background:var(--blood);border-radius:0;
   align-self:center;transform:rotate(45deg);
 }
-.nav-brand strong{font-size:16px;letter-spacing:.06em;font-weight:600;}
-.nav-brand span{font-family:var(--sans);font-size:10px;letter-spacing:.2em;color:var(--ink-faint);}
+.nav-brand strong{font-size:19px;letter-spacing:.1em;font-weight:700;}
+.nav-brand span{font-family:var(--sans);font-size:10.5px;letter-spacing:.18em;color:var(--ink-faint);}
 .nav-links{display:flex;align-items:center;gap:26px;}
 .nav-links a{
-  font-family:var(--serif);font-size:13.5px;letter-spacing:.18em;color:var(--ink-soft);font-weight:500;
+  font-family:var(--serif);font-size:15px;letter-spacing:.12em;color:var(--ink);font-weight:700;
   position:relative;padding:4px 0;transition:color .35s var(--ease);
 }
 .nav-links a::after{
