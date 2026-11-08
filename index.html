@@ -9,7 +9,7 @@
 <meta name="description" content="《百年星语·破晓1928》剧本展示站：三幕十四场，28 首唱段，1928 至 2026 双时空。云南本土红色题材音乐剧，编剧白耀洲、孙子岚。">
 <link rel="preconnect" href="https://miaoda.feishu.cn">
 <link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Serif+SC:wght@400;500;600;700;900&family=Noto+Sans+SC:wght@300;400;500&display=swap">
-<link rel="stylesheet" href="assets/style.css?v=20261112">
+<link rel="stylesheet" href="assets/style.css?v=20261111">
 <style>
 /* ============ 信封访问门 ============ */
 html.is-locked{overflow:hidden;}
@@ -115,14 +115,6 @@ html.is-locked{overflow:hidden;}
   color:rgba(246,231,220,.46);transition:color .3s var(--ease);
 }
 .gate-hint.is-error{color:#F0A9A0;}
-.gate-snd{
-  margin-top:14px;background:none;border:0;border-bottom:1px solid rgba(246,231,220,.18);
-  cursor:pointer;font-family:var(--sans);font-size:10.5px;letter-spacing:.22em;
-  color:rgba(246,231,220,.42);padding:6px 2px;
-  transition:color .3s var(--ease),border-color .3s var(--ease);
-}
-.gate-snd:hover,.gate-snd:focus-visible{color:rgba(246,231,220,.78);border-bottom-color:rgba(246,231,220,.5);}
-
 .gate.is-shake .envelope{animation:envShake .5s var(--ease);}
 @keyframes envShake{
   0%,100%{transform:translateX(0);}
@@ -209,7 +201,6 @@ html.is-locked{overflow:hidden;}
         <button id="gateBtn" type="button">拆 信</button>
       </div>
       <p class="gate-hint" id="gateHint">本页为剧本样稿，仅限受邀方查阅</p>
-      <button class="gate-snd" id="gateSnd" type="button" aria-pressed="true">声音 · 开</button>
     </div>
 
     <div class="gate-reveal" id="gateReveal" aria-hidden="true">

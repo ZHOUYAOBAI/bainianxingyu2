@@ -520,127 +520,6 @@
     return { start: start, burstCenter: burstCenter, stop: stop };
   }
 
-  /* ---------- 信封门的合成音效（WebAudio，无外部文件） ---------- */
-  function createGateSound() {
-    var ctx = null, master = null, muted = false;
-    try { muted = localStorage.getItem("bx1928_sound") === "0"; } catch (e) {}
-
-    function ensure() {
-      var C = window.AudioContext || window.webkitAudioContext;
-      if (!C) return null;
-      if (!ctx) {
-        try { ctx = new C(); } catch (e) { return null; }
-        master = ctx.createGain();
-        master.gain.value = 1;
-        master.connect(ctx.destination);
-      }
-      if (ctx.state === "suspended") { try { ctx.resume(); } catch (e) {} }
-      return ctx;
-    }
-    function noise(dur) {
-      var c = ensure();
-      var buf = c.createBuffer(1, Math.ceil(c.sampleRate * dur), c.sampleRate);
-      var ch = buf.getChannelData(0);
-      for (var i = 0; i < ch.length; i++) {
-        var t = i / ch.length;
-        ch[i] = (Math.random() * 2 - 1) * (1 - t) * (1 - t);
-      }
-      var src = c.createBufferSource();
-      src.buffer = buf;
-      return src;
-    }
-    function paper(offset, dur, gain, f1, f2) {
-      var c = ensure(); if (!c || muted) return;
-      var src = noise(dur);
-      var bp = c.createBiquadFilter();
-      bp.type = "bandpass"; bp.Q.value = 1.1;
-      bp.frequency.setValueAtTime(f1, c.currentTime + offset);
-      bp.frequency.exponentialRampToValueAtTime(f2, c.currentTime + offset + dur);
-      var g = c.createGain();
-      g.gain.setValueAtTime(0.0001, c.currentTime + offset);
-      g.gain.exponentialRampToValueAtTime(gain, c.currentTime + offset + dur * 0.22);
-      g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + offset + dur);
-      src.connect(bp); bp.connect(g); g.connect(master);
-      src.start(c.currentTime + offset);
-      src.stop(c.currentTime + offset + dur + 0.02);
-    }
-    function bell(freq, offset, gain, decay) {
-      var c = ensure(); if (!c || muted) return;
-      [1, 1.98, 2.94].forEach(function (mul, k) {
-        var osc = c.createOscillator();
-        osc.type = "sine";
-        osc.frequency.value = freq * mul;
-        var g = c.createGain();
-        var t0 = c.currentTime + offset;
-        var peak = gain / (k + 1.35);
-        g.gain.setValueAtTime(0.0001, t0);
-        g.gain.exponentialRampToValueAtTime(peak, t0 + 0.02);
-        g.gain.exponentialRampToValueAtTime(0.0001, t0 + decay * (1 - k * 0.22));
-        osc.connect(g); g.connect(master);
-        osc.start(t0); osc.stop(t0 + decay + 0.05);
-      });
-    }
-    function swell(offset, dur, gain) {
-      var c = ensure(); if (!c || muted) return;
-      var osc = c.createOscillator();
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(58, c.currentTime + offset);
-      osc.frequency.linearRampToValueAtTime(74, c.currentTime + offset + dur);
-      var g = c.createGain();
-      g.gain.setValueAtTime(0.0001, c.currentTime + offset);
-      g.gain.exponentialRampToValueAtTime(gain, c.currentTime + offset + dur * 0.45);
-      g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + offset + dur);
-      osc.connect(g); g.connect(master);
-      osc.start(c.currentTime + offset); osc.stop(c.currentTime + offset + dur + 0.05);
-    }
-
-    return {
-      isMuted: function () { return muted; },
-      setMuted: function (v) {
-        muted = !!v;
-        try { localStorage.setItem("bx1928_sound", muted ? "0" : "1"); } catch (e) {}
-      },
-      warm: function () { ensure(); },
-      wrong: function () {
-        var c = ensure(); if (!c || muted) return;
-        var osc = c.createOscillator();
-        osc.type = "triangle";
-        osc.frequency.setValueAtTime(132, c.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(78, c.currentTime + 0.22);
-        var g = c.createGain();
-        g.gain.setValueAtTime(0.14, c.currentTime);
-        g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + 0.26);
-        osc.connect(g); g.connect(master);
-        osc.start(); osc.stop(c.currentTime + 0.3);
-      },
-      /* 拆信：封口的纸声 + 一缕亮音 */
-      open: function () {
-        paper(0.02, 0.5, 0.09, 2400, 620);
-        paper(0.30, 0.34, 0.06, 1500, 420);
-        bell(1046.5, 0.36, 0.06, 0.9);
-      },
-      /* 信封上浮、光晕张开 */
-      rise: function () {
-        swell(0, 1.3, 0.05);
-        paper(0, 0.7, 0.05, 900, 5200);
-        bell(1318.5, 0.25, 0.05, 1.1);
-      },
-      /* 金字落定：一串金铃 */
-      chord: function () {
-        var notes = [659.3, 784, 987.8, 1174.7];
-        notes.forEach(function (f, i) { bell(f, i * 0.075, 0.075, 1.6); });
-        bell(1568, 0.34, 0.05, 1.4);
-        swell(0, 2.2, 0.045);
-      },
-      /* 星芒闪一下 */
-      sparkle: function () {
-        bell(2637, 0, 0.045, 0.5);
-        bell(3136, 0.08, 0.038, 0.55);
-        bell(3520, 0.17, 0.03, 0.5);
-      }
-    };
-  }
-
   function initGate() {
     var gate = document.getElementById("gate");
     if (!gate) return;
@@ -653,22 +532,6 @@
     var PASS = "19281314";
     var busy = false;
     var dust = initDust(gate);
-    var snd = createGateSound();
-
-    var sndBtn = document.getElementById("gateSnd");
-    if (sndBtn) {
-      var paintSnd = function () {
-        var on = !snd.isMuted();
-        sndBtn.textContent = "声音 · " + (on ? "开" : "关");
-        sndBtn.setAttribute("aria-pressed", on ? "true" : "false");
-      };
-      paintSnd();
-      sndBtn.addEventListener("click", function () {
-        snd.setMuted(!snd.isMuted());
-        paintSnd();
-        if (!snd.isMuted()) { snd.warm(); snd.sparkle(); }
-      });
-    }
 
     function unlock() {
       busy = true;
@@ -676,14 +539,12 @@
       form.classList.add("is-gone");
       gate.classList.add("is-glowing");
       envelope.classList.add("is-open");
-      snd.open();
       dust.start();
       setTimeout(function () {
         envelope.style.transition = "opacity .45s ease, transform .6s ease";
         envelope.style.opacity = "0";
         envelope.style.transform = "translateY(-8%) scale(.94)";
         dust.burstCenter(84);
-        snd.rise();
       }, 1450);
       setTimeout(function () {
         gate.classList.add("is-casting");
@@ -691,11 +552,9 @@
       }, 1800);
       setTimeout(function () {
         reveal.classList.add("is-play");
-        snd.chord();
       }, 1950);
       setTimeout(function () {
         dust.burstCenter(30);
-        snd.sparkle();
       }, 2750);
       setTimeout(function () {
         gate.classList.add("is-done");
@@ -715,16 +574,12 @@
       gate.classList.add("is-shake");
       hint.textContent = "密码不对，请核对后再试";
       hint.classList.add("is-error");
-      snd.wrong();
       input.select();
     }
 
-    btn.addEventListener("click", function () {
-      snd.warm();
-      submit();
-    });
+    btn.addEventListener("click", submit);
     input.addEventListener("keydown", function (e) {
-      if (e.key === "Enter") { e.preventDefault(); snd.warm(); submit(); }
+      if (e.key === "Enter") { e.preventDefault(); submit(); }
     });
     input.addEventListener("input", function () {
       hint.textContent = "本页为剧本样稿，仅限受邀方查阅";
