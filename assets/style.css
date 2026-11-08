@@ -425,6 +425,7 @@ button{font-family:inherit;color:inherit;}
     linear-gradient(to top,rgba(34,12,17,.86) 0,rgba(34,12,17,.5) 18%,rgba(34,12,17,.06) 40%,rgba(34,12,17,0) 62%),
     linear-gradient(110deg,rgba(40,15,20,.6),rgba(40,15,20,.06) 46%,rgba(40,15,20,.52));
 }
+.interlude-image--wine{background-color:#3C1118;background-blend-mode:screen;}
 .interlude-inner{
   position:relative;z-index:2;max-width:var(--max);margin:0 auto;
   padding:clamp(80px,14vh,140px) var(--pad);width:100%;
@@ -737,6 +738,10 @@ button{font-family:inherit;color:inherit;}
 
 
 /* ---------- 金边慢慢亮一下 ---------- */
+.wineveil{
+  position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:#3A1017;mix-blend-mode:screen;opacity:.92;
+}
 .gild{
   position:absolute;inset:0;z-index:4;pointer-events:none;
   border:2px solid rgba(198,148,78,.6);
