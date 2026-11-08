@@ -250,8 +250,9 @@
     if (!rows.length) return;
 
     var audio = new Audio();
-    audio.preload = "none";
+    audio.preload = "auto";
     var current = null;
+    var seeking = false;
 
     function fmt(t) {
       if (!t || !isFinite(t)) return "0:00";
@@ -259,40 +260,138 @@
       return m + ":" + (sec < 10 ? "0" : "") + sec;
     }
 
+    function setTime(row, cur, total) {
+      var tm = row.querySelector(".atime");
+      if (!tm) return;
+      tm.textContent = (cur === null) ? tm.dataset.dur : fmt(cur) + " / " + fmt(total);
+    }
+
+    function setProgress(row, pct) {
+      var bar = row.querySelector(".abar i");
+      if (bar) bar.style.width = Math.max(0, Math.min(100, pct)) + "%";
+    }
+
+    function paintBuffer() {
+      if (!current || !audio.buffered || !audio.duration) return;
+      var end = 0;
+      for (var i = 0; i < audio.buffered.length; i++) {
+        if (audio.buffered.start(i) <= audio.currentTime + 0.1) {
+          end = Math.max(end, audio.buffered.end(i));
+        }
+      }
+      var buf = current.querySelector(".abuf");
+      if (buf) buf.style.width = ((end / audio.duration) * 100).toFixed(2) + "%";
+    }
+
     function reset(row) {
       row.classList.remove("is-playing");
-      var bar = row.querySelector(".abar i");
-      if (bar) bar.style.width = "0%";
-      var tm = row.querySelector(".atime");
-      if (tm) tm.textContent = tm.dataset.dur || tm.textContent;
+      setProgress(row, 0);
+      setTime(row, null);
+      var buf = row.querySelector(".abuf");
+      if (buf) buf.style.width = "0%";
+    }
+
+    function preload(src) {
+      try { fetch(src, { cache: "force-cache" }); } catch (e) {}
+    }
+
+    function playRow(row) {
+      if (current && current !== row) { audio.pause(); }
+      var switching = current !== row;
+      current = row;
+      if (switching || !audio.src || audio.src.indexOf(row.dataset.src) === -1) {
+        audio.src = row.dataset.src;
+        audio.load();
+      }
+      audio.play().then(function () {
+        row.classList.add("is-playing");
+        var idx = rows.indexOf(row);
+        var next = rows[idx + 1];
+        if (next) preload(next.dataset.src);
+      }).catch(function () { reset(row); });
     }
 
     rows.forEach(function (row) {
       var tm = row.querySelector(".atime");
-      tm.dataset.dur = tm.textContent;
+      if (tm) tm.dataset.dur = tm.textContent;
+
+      /* 播放 / 暂停 */
       row.querySelector(".aplay").addEventListener("click", function () {
-        if (current === row) {
-          if (audio.paused) { audio.play(); row.classList.add("is-playing"); }
-          else { audio.pause(); row.classList.remove("is-playing"); }
-          return;
+        if (current === row && !audio.paused) { audio.pause(); return; }
+        if (current === row && audio.paused) { playRow(row); return; }
+        playRow(row);
+      });
+
+      /* 歌词展开 */
+      var tog = row.querySelector(".alytog");
+      if (tog) tog.addEventListener("click", function () {
+        var open = row.classList.toggle("is-open");
+        tog.setAttribute("aria-expanded", open ? "true" : "false");
+        tog.textContent = open ? "收起歌词" : "歌词";
+      });
+
+      /* 拖动 / 点击进度条跳转 */
+      var bar = row.querySelector(".abar");
+      if (!bar) return;
+
+      function seekFromEvent(e) {
+        var rect = bar.getBoundingClientRect();
+        var x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+        var pct = Math.min(1, Math.max(0, x / rect.width));
+        if (current !== row) {
+          playRow(row);
         }
-        if (current) { audio.pause(); reset(current); }
-        current = row;
-        audio.src = row.dataset.src;
-        row.classList.add("is-playing");
-        audio.play().catch(function () { reset(row); });
+        var apply = function () {
+          if (!isFinite(audio.duration)) return;
+          audio.currentTime = pct * audio.duration;
+          setProgress(row, pct * 100);
+          setTime(row, audio.currentTime, audio.duration);
+          paintBuffer();
+        };
+        if (isFinite(audio.duration)) apply();
+        else audio.addEventListener("loadedmetadata", apply, { once: true });
+      }
+
+      bar.addEventListener("pointerdown", function (e) {
+        if (e.button !== undefined && e.button !== 0) return;
+        seeking = true;
+        try { bar.setPointerCapture(e.pointerId); } catch (err) {}
+        seekFromEvent(e);
+        e.preventDefault();
+      });
+      bar.addEventListener("pointermove", function (e) {
+        if (!seeking) return;
+        seekFromEvent(e);
+      });
+      bar.addEventListener("pointerup", function () { seeking = false; });
+      bar.addEventListener("pointercancel", function () { seeking = false; });
+
+      bar.addEventListener("keydown", function (e) {
+        if (!isFinite(audio.duration)) return;
+        if (current !== row) playRow(row);
+        var step = (e.shiftKey ? 30 : 5);
+        if (e.key === "ArrowRight") { audio.currentTime = Math.min(audio.duration, audio.currentTime + step); e.preventDefault(); }
+        if (e.key === "ArrowLeft") { audio.currentTime = Math.max(0, audio.currentTime - step); e.preventDefault(); }
       });
     });
 
     audio.addEventListener("timeupdate", function () {
       if (!current) return;
-      var pct = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
-      var bar = current.querySelector(".abar i");
-      if (bar) bar.style.width = pct.toFixed(2) + "%";
-      var tm = current.querySelector(".atime");
-      if (tm) tm.textContent = fmt(audio.currentTime) + " / " + fmt(audio.duration || 0);
+      if (!seeking) {
+        var pct = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
+        setProgress(current, pct);
+        setTime(current, audio.currentTime, audio.duration || 0);
+      }
+      paintBuffer();
     });
-
+    audio.addEventListener("progress", paintBuffer);
+    audio.addEventListener("loadedmetadata", paintBuffer);
+    audio.addEventListener("pause", function () {
+      if (current) current.classList.remove("is-playing");
+    });
+    audio.addEventListener("play", function () {
+      if (current) current.classList.add("is-playing");
+    });
     audio.addEventListener("ended", function () {
       if (current) { reset(current); current = null; }
     });

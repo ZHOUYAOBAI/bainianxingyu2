@@ -583,9 +583,30 @@ button{font-family:inherit;color:inherit;}
 .aplay:hover .aico,.aplay:focus-visible .aico{border-left-color:var(--paper);}
 .arow.is-playing .aplay{background:var(--crimson);border-color:var(--crimson);}
 .arow.is-playing .aico{width:3px;height:12px;border:0;margin:0 0 0 -5px;background:var(--paper);box-shadow:6px 0 0 var(--paper);}
-.abar{position:absolute;left:0;right:0;bottom:-1px;height:2px;background:rgba(42,21,24,.10);}
-.abar i{display:block;height:100%;width:0;background:var(--blood);transition:width .12s linear;}
+.abar{
+  position:absolute;left:0;right:0;bottom:-1px;height:2px;background:rgba(42,21,24,.10);
+  cursor:pointer;touch-action:none;
+}
+.abar::after{content:"";position:absolute;left:0;right:0;top:-9px;bottom:-9px;}
+.abuf{position:absolute;left:0;top:0;height:100%;width:0;background:rgba(156,32,40,.28);}
+.abar i{position:relative;display:block;height:100%;width:0;background:var(--blood);}
+.abar:focus-visible{outline:2px solid rgba(156,32,40,.4);outline-offset:2px;}
 .arow.is-playing .abar{background:rgba(156,32,40,.16);}
+
+/* 歌词 */
+.alytog{
+  margin-top:10px;font-family:var(--sans);font-size:11px;letter-spacing:.16em;
+  color:var(--blood);border-bottom:1px solid rgba(156,32,40,.35);padding:0 0 2px;
+  background:none;border:0;border-bottom:1px solid rgba(156,32,40,.35);cursor:pointer;
+  transition:color .3s var(--ease),border-color .3s var(--ease);
+}
+.alytog:hover{color:var(--crimson);border-bottom-color:var(--crimson);}
+.aly{grid-column:1/-1;display:none;margin-top:6px;padding:22px 0 6px 0;border-top:1px dashed rgba(156,32,40,.28);}
+.arow.is-open .aly{display:block;}
+.alw{font-family:var(--sans);font-size:10.5px;letter-spacing:.2em;color:var(--blood);margin:16px 0 6px;}
+.alw:first-child{margin-top:0;}
+.alv{font-size:clamp(14px,1.3vw,16.5px);line-height:2.15;color:var(--ink-soft);margin:0;letter-spacing:.02em;}
+.aly cite{display:block;margin-top:18px;font-style:normal;font-family:var(--sans);font-size:10.5px;letter-spacing:.14em;color:var(--ink-faint);}
 .demo-note{margin-top:20px;font-family:var(--sans);font-size:11px;letter-spacing:.06em;line-height:1.9;color:var(--ink-faint);}
 
 /* ---------- 06 年表 ---------- */
