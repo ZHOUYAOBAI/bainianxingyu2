@@ -629,6 +629,11 @@ button{font-family:inherit;color:inherit;}
   transition:color .3s var(--ease),border-color .3s var(--ease);
 }
 .alytog:hover{color:var(--crimson);border-bottom-color:var(--crimson);}
+.newtag{
+  display:inline-block;margin-left:10px;padding:2px 7px 3px;vertical-align:middle;
+  font-family:var(--sans);font-size:10px;letter-spacing:.1em;font-weight:400;
+  color:#F6E7DC;background:var(--crimson);border-radius:2px;transform:translateY(-2px);
+}
 .aly{grid-column:1/-1;display:none;margin-top:6px;padding:22px 0 6px 0;border-top:1px dashed rgba(156,32,40,.28);}
 .arow.is-open .aly{display:block;}
 .alw{font-family:var(--sans);font-size:10.5px;letter-spacing:.2em;color:var(--blood);margin:16px 0 6px;}
