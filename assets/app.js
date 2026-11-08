@@ -322,14 +322,6 @@
         playRow(row);
       });
 
-      /* 歌词展开 */
-      var tog = row.querySelector(".alytog");
-      if (tog) tog.addEventListener("click", function () {
-        var open = row.classList.toggle("is-open");
-        tog.setAttribute("aria-expanded", open ? "true" : "false");
-        tog.textContent = open ? "收起歌词" : "歌词";
-      });
-
       /* 拖动 / 点击进度条跳转 */
       var bar = row.querySelector(".abar");
       if (!bar) return;
