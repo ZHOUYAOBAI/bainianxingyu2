@@ -520,6 +520,145 @@
     return { start: start, burstCenter: burstCenter, stop: stop };
   }
 
+  /* ---------- 信封门的合成音效（WebAudio，无外部文件） ---------- */
+  function createGateSound() {
+    var ctx = null, master = null, muted = false;
+    try { muted = localStorage.getItem("bx1928_sound") === "0"; } catch (e) {}
+
+    function ensure() {
+      var C = window.AudioContext || window.webkitAudioContext;
+      if (!C) return null;
+      if (!ctx) {
+        try { ctx = new C(); } catch (e) { return null; }
+        master = ctx.createGain();
+        master.gain.value = 1;
+        var comp = ctx.createDynamicsCompressor ? ctx.createDynamicsCompressor() : null;
+        if (comp) {
+          comp.threshold.value = -12;
+          comp.knee.value = 18;
+          comp.ratio.value = 4;
+          comp.attack.value = 0.004;
+          comp.release.value = 0.22;
+          master.connect(comp); comp.connect(ctx.destination);
+        } else {
+          master.connect(ctx.destination);
+        }
+      }
+      if (ctx.state === "suspended") { try { ctx.resume(); } catch (e) {} }
+      return ctx;
+    }
+    function noiseSrc(dur) {
+      var c = ensure();
+      var buf = c.createBuffer(1, Math.ceil(c.sampleRate * dur), c.sampleRate);
+      var ch = buf.getChannelData(0);
+      for (var i = 0; i < ch.length; i++) {
+        var t = i / ch.length;
+        ch[i] = (Math.random() * 2 - 1) * (1 - t) * (1 - t * 0.55);
+      }
+      var src = c.createBufferSource();
+      src.buffer = buf;
+      return src;
+    }
+    function noiseHit(offset, dur, gain, f1, f2, q, type) {
+      var c = ensure(); if (!c || muted) return;
+      var src = noiseSrc(dur);
+      var bp = c.createBiquadFilter();
+      bp.type = type || "bandpass"; bp.Q.value = q == null ? 1 : q;
+      var t0 = c.currentTime + offset;
+      bp.frequency.setValueAtTime(f1, t0);
+      bp.frequency.exponentialRampToValueAtTime(f2, t0 + dur);
+      var g = c.createGain();
+      g.gain.setValueAtTime(0.0001, t0);
+      g.gain.exponentialRampToValueAtTime(gain, t0 + dur * 0.14);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+      src.connect(bp); bp.connect(g); g.connect(master);
+      src.start(t0); src.stop(t0 + dur + 0.02);
+    }
+    function bell(freq, offset, gain, decay, ratio) {
+      var c = ensure(); if (!c || muted) return;
+      var parts = ratio || [1, 1.99, 2.96, 4.1];
+      parts.forEach(function (mul, k) {
+        var osc = c.createOscillator();
+        osc.type = "sine";
+        osc.frequency.value = freq * mul;
+        var g = c.createGain();
+        var t0 = c.currentTime + offset;
+        var peak = gain / (k + 1.1);
+        g.gain.setValueAtTime(0.0001, t0);
+        g.gain.exponentialRampToValueAtTime(peak, t0 + 0.016);
+        g.gain.exponentialRampToValueAtTime(0.0001, t0 + decay * (1 - k * 0.16));
+        osc.connect(g); g.connect(master);
+        osc.start(t0); osc.stop(t0 + decay + 0.06);
+      });
+    }
+    function swell(offset, dur, gain, f1, f2) {
+      var c = ensure(); if (!c || muted) return;
+      var osc = c.createOscillator();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(f1, c.currentTime + offset);
+      osc.frequency.linearRampToValueAtTime(f2, c.currentTime + offset + dur);
+      var g = c.createGain();
+      g.gain.setValueAtTime(0.0001, c.currentTime + offset);
+      g.gain.exponentialRampToValueAtTime(gain, c.currentTime + offset + dur * 0.4);
+      g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + offset + dur);
+      osc.connect(g); g.connect(master);
+      osc.start(c.currentTime + offset); osc.stop(c.currentTime + offset + dur + 0.06);
+    }
+
+    return {
+      isMuted: function () { return muted; },
+      setMuted: function (v) {
+        muted = !!v;
+        try { localStorage.setItem("bx1928_sound", muted ? "0" : "1"); } catch (e) {}
+      },
+      warm: function () { ensure(); },
+      /* 密码错误：一声闷响 */
+      wrong: function () {
+        var c = ensure(); if (!c || muted) return;
+        var osc = c.createOscillator();
+        osc.type = "triangle";
+        osc.frequency.setValueAtTime(116, c.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(64, c.currentTime + 0.24);
+        var g = c.createGain();
+        g.gain.setValueAtTime(0.22, c.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + 0.3);
+        osc.connect(g); g.connect(master);
+        osc.start(); osc.stop(c.currentTime + 0.34);
+        noiseHit(0, 0.16, 0.08, 520, 180, 0.9, "lowpass");
+      },
+      /* 按下「拆信」：撕开封口的一声「嘶——」 */
+      crack: function () {
+        noiseHit(0.01, 0.26, 0.26, 3800, 1100, 0.8);
+        noiseHit(0.10, 0.34, 0.18, 2200, 700, 1.4);
+        bell(1568, 0.24, 0.10, 0.5, [1, 1.5]);
+      },
+      /* 信封翻开、纸页抽出的「呼——」＋一盏低音 */
+      flutter: function () {
+        noiseHit(0, 1.0, 0.15, 320, 1900, 0.7, "lowpass");
+        noiseHit(0.16, 0.62, 0.09, 1400, 3400, 1.2);
+        swell(0, 1.6, 0.09, 52, 74);
+        bell(523.3, 0.12, 0.13, 1.5, [1, 2.01]);
+      },
+      /* 金字落定：钟磬和弦 */
+      chord: function () {
+        var notes = [523.3, 659.3, 784, 1046.5, 1318.5];
+        notes.forEach(function (f, i) { bell(f, i * 0.07, 0.15, 2.0, [1, 1.99, 2.96]); });
+        bell(261.6, 0, 0.12, 2.4, [1, 2.0]);
+        swell(0, 2.4, 0.09, 46, 66);
+      },
+      /* 星芒炸开：一簇细碎的叮 */
+      sparkle: function (n) {
+        var c = ensure(); if (!c || muted) return;
+        var count = n || 8;
+        for (var i = 0; i < count; i++) {
+          var f = 1760 + Math.random() * 2400;
+          bell(f, 0.02 + i * 0.055 + Math.random() * 0.03, 0.11, 0.55 + Math.random() * 0.35, [1, 1.6]);
+        }
+        noiseHit(0, 0.7, 0.10, 4200, 7200, 0.8, "highpass");
+      }
+    };
+  }
+
   function initGate() {
     var gate = document.getElementById("gate");
     if (!gate) return;
@@ -532,6 +671,22 @@
     var PASS = "19281314";
     var busy = false;
     var dust = initDust(gate);
+    var snd = createGateSound();
+
+    var sndBtn = document.getElementById("gateSnd");
+    if (sndBtn) {
+      var paintSnd = function () {
+        var on = !snd.isMuted();
+        sndBtn.textContent = "声音 · " + (on ? "开" : "关");
+        sndBtn.setAttribute("aria-pressed", on ? "true" : "false");
+      };
+      paintSnd();
+      sndBtn.addEventListener("click", function () {
+        snd.setMuted(!snd.isMuted());
+        paintSnd();
+        if (!snd.isMuted()) { snd.warm(); snd.sparkle(); }
+      });
+    }
 
     function unlock() {
       busy = true;
@@ -539,22 +694,27 @@
       form.classList.add("is-gone");
       gate.classList.add("is-glowing");
       envelope.classList.add("is-open");
+      snd.crack();
       dust.start();
       setTimeout(function () {
         envelope.style.transition = "opacity .45s ease, transform .6s ease";
         envelope.style.opacity = "0";
         envelope.style.transform = "translateY(-8%) scale(.94)";
         dust.burstCenter(84);
+        snd.flutter();
       }, 1450);
       setTimeout(function () {
         gate.classList.add("is-casting");
         dust.burstCenter(46);
+        snd.sparkle(10);
       }, 1800);
       setTimeout(function () {
         reveal.classList.add("is-play");
+        snd.chord();
       }, 1950);
       setTimeout(function () {
         dust.burstCenter(30);
+        snd.sparkle(6);
       }, 2750);
       setTimeout(function () {
         gate.classList.add("is-done");
@@ -574,12 +734,16 @@
       gate.classList.add("is-shake");
       hint.textContent = "密码不对，请核对后再试";
       hint.classList.add("is-error");
+      snd.wrong();
       input.select();
     }
 
-    btn.addEventListener("click", submit);
+    btn.addEventListener("click", function () {
+      snd.warm();
+      submit();
+    });
     input.addEventListener("keydown", function (e) {
-      if (e.key === "Enter") { e.preventDefault(); submit(); }
+      if (e.key === "Enter") { e.preventDefault(); snd.warm(); submit(); }
     });
     input.addEventListener("input", function () {
       hint.textContent = "本页为剧本样稿，仅限受邀方查阅";
