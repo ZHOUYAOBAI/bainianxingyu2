@@ -205,7 +205,7 @@ button{font-family:inherit;color:inherit;}
   padding:0 var(--pad);
 }
 .hero-stats-inner{
-  display:grid;grid-template-columns:repeat(3,1fr);
+  display:grid;grid-template-columns:repeat(2,1fr);
   border-top:1px solid var(--crimson);border-bottom:1px solid var(--paper-line);
 }
 .stat{
