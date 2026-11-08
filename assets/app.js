@@ -71,7 +71,6 @@
 
     var data = window.NUMBERS;
     var count = document.getElementById("scoreCount");
-    var total = document.getElementById("scoreTotal");
     var buttons = Array.prototype.slice.call(document.querySelectorAll(".fbtn"));
 
     function esc(s) {
@@ -104,9 +103,6 @@
         var m = n.dur.match(/(\d+)′(\d+)″/);
         if (m) sec += parseInt(m[1], 10) * 60 + parseInt(m[2], 10);
       });
-      if (total) {
-        total.textContent = "唱段总时长 " + Math.floor(sec / 60) + "′" + String(sec % 60).padStart(2, "0") + "″";
-      }
     }
 
     buttons.forEach(function (btn) {
@@ -197,13 +193,54 @@
         if (!a) return;
         if (entry.isIntersecting) {
           links.forEach(function (l) { l.style.color = ""; });
-          a.style.color = "#211B15";
+          a.style.color = "#2A1518";
         }
       });
     }, { rootMargin: "-45% 0px -50% 0px" });
     Object.keys(map).forEach(function (id) {
       io.observe(document.getElementById(id));
     });
+  }
+
+
+  /* ---------- 7. 终幕图版轮播 ---------- */
+  function initPlate() {
+    var frame = document.querySelector(".plate-slider");
+    if (!frame) return;
+    var slides = Array.prototype.slice.call(frame.querySelectorAll(".plate-slide"));
+    var dots = Array.prototype.slice.call(frame.querySelectorAll(".pdot"));
+    if (slides.length < 2) return;
+
+    var idx = 0;
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var timer = null;
+
+    function show(n) {
+      idx = (n + slides.length) % slides.length;
+      slides.forEach(function (s, i) { s.classList.toggle("is-on", i === idx); });
+      dots.forEach(function (d, i) { d.classList.toggle("is-on", i === idx); });
+    }
+
+    function play() {
+      if (reduce || timer) return;
+      timer = window.setInterval(function () { show(idx + 1); }, 6200);
+    }
+    function stop() {
+      if (!timer) return;
+      window.clearInterval(timer);
+      timer = null;
+    }
+
+    dots.forEach(function (d, i) {
+      d.addEventListener("click", function () { show(i); stop(); play(); });
+    });
+
+    frame.addEventListener("mouseenter", stop);
+    frame.addEventListener("mouseleave", play);
+    frame.addEventListener("focusin", stop);
+    frame.addEventListener("focusout", function () { play(); });
+
+    play();
   }
 
   function boot() {
@@ -213,6 +250,7 @@
     initStar();
     initInterlude();
     initNavState();
+    initPlate();
   }
 
   if (document.readyState === "loading") {
