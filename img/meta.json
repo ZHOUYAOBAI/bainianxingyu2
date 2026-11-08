@@ -1,0 +1,54 @@
+{
+ "lamp1": {
+  "title": "File:Kerosene lamp.jpg",
+  "file": "img/lamp1.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "license": "CC BY-SA 2.0",
+  "artist": "Jakub T. Jankiewicz from Bliżyn, Poland",
+  "page": "https://commons.wikimedia.org/wiki/File:Kerosene_lamp.jpg",
+  "w": 3264,
+  "h": 4928
+ },
+ "lamp2": {
+  "title": "File:Abandoned Oil Lamp in dark area.jpg",
+  "file": "img/lamp2.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "license": "CC BY-SA 4.0",
+  "artist": "Bundleofgreens",
+  "page": "https://commons.wikimedia.org/wiki/File:Abandoned_Oil_Lamp_in_dark_area.jpg",
+  "w": 3120,
+  "h": 3402
+ },
+ "miao": {
+  "title": "File:Miao embroidery - Yunnan Provincial Museum- DSC02190.JPG",
+  "file": "img/miao.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "license": "Public domain",
+  "artist": "Daderot",
+  "page": "https://commons.wikimedia.org/wiki/File:Miao_embroidery_-_Yunnan_Provincial_Museum-_DSC02190.JPG",
+  "w": 4320,
+  "h": 3240
+ },
+ "jacaranda": {
+  "title": "File:2026.04.25.134534 Jacarandas Jiaochang Street Kunming Yunnan China.jpg",
+  "file": "img/jacaranda.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "license": "CC0",
+  "artist": "Hermann Luyken",
+  "page": "https://commons.wikimedia.org/wiki/File:2026.04.25.134534_Jacarandas_Jiaochang_Street_Kunming_Yunnan_China.jpg",
+  "w": 3840,
+  "h": 2160
+ },
+ "corn": {
+  "title": "File:Corn hanging up in the shed above the house Nanyao Village, Naxi, Yunnan.jpg",
+  "file": "img/corn.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "license": "CC BY 2.0",
+  "artist": "timquijano",
+  "page": "https://commons.wikimedia.org/wiki/File:Corn_hanging_up_in_the_shed_above_the_house_Nanyao_Village,_Naxi,_Yunnan.jpg",
+  "w": 3008,
+  "h": 2000
+ },
+ "loom": {
+  "title": "File:Loom - Yunnan Nationalities Museum - DSC04120.JPG",
+  "file": "img/loom.jpg",
+  "license": "Public domain",
+  "artist": "Daderot",
+  "page": "https://commons.wikimedia.org/wiki/File:Loom_-_Yunnan_Nationalities_Museum_-_DSC04120.JPG"
+ }
+}
