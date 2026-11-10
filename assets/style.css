@@ -850,10 +850,12 @@ br.mbr{display:none;}
 .run-table td{padding:13px 12px;vertical-align:top;font-size:14.5px;line-height:1.8;color:var(--ink-soft);}
 .run-table td.actc{font-family:var(--sans);font-size:11px;letter-spacing:.14em;color:var(--ink-faint);white-space:nowrap;width:62px;}
 .run-table td.no{font-family:var(--sans);font-size:11px;letter-spacing:.1em;color:var(--ink-faint);white-space:nowrap;width:52px;}
-.run-table td.tt{font-size:16px;font-weight:600;color:var(--ink);white-space:nowrap;width:108px;letter-spacing:.04em;}
-.run-table td.tm{font-family:var(--sans);font-size:11.5px;color:var(--ink-faint);white-space:nowrap;width:112px;}
+.run-table td.tt{font-size:15px;font-weight:600;color:var(--ink);white-space:normal;min-width:206px;letter-spacing:.02em;line-height:1.65;}
+.run-table td.tt .who{display:block;margin-top:5px;font-family:var(--sans);font-size:11px;font-weight:400;letter-spacing:.02em;color:var(--ink-faint);line-height:1.75;}
+.run-table td.tm{font-family:var(--sans);font-size:11.5px;color:var(--ink-faint);white-space:nowrap;width:108px;}
+.run-table td.sg{font-size:13px;line-height:1.9;}
 .run-foot{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(16px,2.4vw,32px);
+  display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2.4vw,32px);
   margin-top:22px;padding-top:18px;border-top:1px solid var(--paper-line);
 }
 .run-foot h5{margin:0 0 6px;font-family:var(--sans);font-size:10.5px;font-weight:400;letter-spacing:.2em;color:var(--ink-faint);}

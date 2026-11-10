@@ -7,7 +7,7 @@ window.NUMBERS=[
   "key": "g 小调",
   "meter": "4/4",
   "tempo": "Allegro ♩=108",
-  "dur": "",
+  "dur": "3′30″",
   "cls": "独唱"
  },
  {
@@ -18,7 +18,7 @@ window.NUMBERS=[
   "key": "d 小调→D 大调",
   "meter": "4/4",
   "tempo": "Andante ♩=72",
-  "dur": "",
+  "dur": "4′00″",
   "cls": "序曲"
  },
  {
