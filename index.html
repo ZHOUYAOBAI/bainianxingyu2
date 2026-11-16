@@ -34,9 +34,9 @@ html.is-locked{overflow:hidden;}
 }
 .env-body{
   position:absolute;inset:0;z-index:1;border-radius:3px;overflow:hidden;
-  background:linear-gradient(168deg,#F3E7D8 0,#E7D6C2 58%,#DCC8B2 100%);
-  border:1px solid rgba(107,22,32,.22);
-  box-shadow:inset 0 0 0 6px rgba(255,253,247,.5),inset 0 0 44px rgba(120,74,44,.18);
+  background:linear-gradient(168deg,#F8ECDF 0,#EBD9C5 56%,#DEC9B3 100%);
+  border:1px solid rgba(107,22,32,.2);
+  box-shadow:inset 0 0 0 6px rgba(255,253,247,.52),inset 0 0 46px rgba(120,74,44,.16);
 }
 /* 信封折线（下侧 V 形） */
 .env-lines{
@@ -59,21 +59,22 @@ html.is-locked{overflow:hidden;}
 .env-flap{backface-visibility:hidden;-webkit-backface-visibility:hidden;}
 /* 地址行 */
 .env-addr{
-  position:absolute;left:0;right:0;top:56%;z-index:2;
-  padding:0 12%;text-align:center;
+  position:absolute;left:0;right:0;top:57.5%;z-index:2;
+  padding:0 9%;text-align:center;
 }
 .env-to{
-  margin:0 0 10px;font-size:clamp(17px,2.1vw,25px);font-weight:700;letter-spacing:.24em;
-  color:#6B1620;line-height:1.5;
+  margin:0;font-size:clamp(18px,2vw,25px);font-weight:600;letter-spacing:.26em;
+  color:#6B1620;line-height:1.5;text-indent:.3em;
 }
-.env-to em{font-style:normal;color:#9C2028;}
-.env-from{
-  margin:0;font-family:var(--sans);font-size:clamp(10px,.95vw,12px);
-  letter-spacing:.12em;color:rgba(42,21,24,.5);line-height:1.7;
+.env-to em{font-style:normal;color:#9C2028;letter-spacing:.18em;}
+.env-sign{
+  position:absolute;left:9%;bottom:calc(clamp(10px,1.05vw,13px) + 12px);z-index:2;
+  margin:0;text-align:left;font-family:var(--sans);font-size:clamp(8.6px,.78vw,9.4px);
+  letter-spacing:.03em;color:rgba(42,21,24,.44);line-height:1.8;white-space:nowrap;
 }
 /* 火漆印 */
 .env-seal{
-  position:absolute;left:50%;bottom:-16px;transform:translateX(-50%) rotate(-4deg);z-index:5;
+  position:absolute;left:50%;bottom:-14px;transform:translateX(-50%) rotate(-4deg);z-index:5;
   width:clamp(46px,4.4vw,58px);height:clamp(46px,4.4vw,58px);border-radius:50%;
   display:flex;align-items:center;justify-content:center;
   background:radial-gradient(circle at 34% 28%,#C23B45 0,#9C2028 44%,#6E1218 100%);
@@ -82,6 +83,54 @@ html.is-locked{overflow:hidden;}
 }
 .env-seal span{
   font-size:clamp(16px,1.5vw,19px);font-weight:700;color:#FBE8D8;letter-spacing:.1em;
+}
+/* 土布经纬 */
+.env-cloth{
+  position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:
+    repeating-linear-gradient(0deg,rgba(122,84,54,.045) 0 1px,transparent 1px 6px),
+    repeating-linear-gradient(90deg,rgba(122,84,54,.035) 0 1px,transparent 1px 7px);
+  mix-blend-mode:multiply;
+}
+/* 彝绣菱格纹边饰（红／金／褐，克制三色） */
+.env-weave{
+  position:absolute;z-index:2;pointer-events:none;
+  background:
+    repeating-linear-gradient(45deg,rgba(156,32,40,.3) 0 .7px,transparent .7px 9px),
+    repeating-linear-gradient(-45deg,rgba(156,32,40,.3) 0 .7px,transparent .7px 9px);
+}
+.env-weave::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(circle,rgba(192,139,69,.75) 0 .8px,transparent 1.1px) 0 0/9px 9px;
+  opacity:.32;
+}
+.env-weave--b{
+  left:6px;right:6px;bottom:6px;height:clamp(10px,1.05vw,13px);
+  border-top:1px solid rgba(192,139,69,.45);
+}
+.env-weave--l,.env-weave--r{top:76%;bottom:6px;width:clamp(6px,.62vw,8px);opacity:.85;}
+.env-weave--l{left:6px;border-right:1px solid rgba(192,139,69,.38);}
+.env-weave--r{right:6px;border-left:1px solid rgba(192,139,69,.38);}
+/* 金线内框 */
+.env-body::after{
+  content:"";position:absolute;inset:7px;z-index:3;pointer-events:none;
+  border:1px solid rgba(192,139,69,.34);
+}
+/* 太阳纹（彝族八芒） */
+.env-star{
+  display:block;width:clamp(17px,1.9vw,21px);height:clamp(17px,1.9vw,21px);
+  margin:0 auto clamp(3px,.5vh,5px);
+  color:rgba(150,106,52,.85);opacity:.62;
+}
+/* 名下行细线 */
+.env-rule{
+  position:relative;width:min(48%,158px);height:1px;margin:clamp(6px,.9vh,8px) auto 0;
+  background:linear-gradient(90deg,transparent,rgba(192,139,69,.72),transparent);
+}
+.env-rule::after{
+  content:"";position:absolute;left:50%;top:50%;width:5px;height:5px;
+  transform:translate(-50%,-50%) rotate(45deg);
+  background:rgba(156,32,40,.55);
 }
 .envelope.is-open .env-seal{transform:translateX(-50%) rotate(-4deg) scale(.9);opacity:.35;}
 
@@ -162,6 +211,11 @@ html.is-locked{overflow:hidden;}
   .envelope{width:min(80vw,340px);}
   .env-addr{top:52%;}
   .env-to{font-size:16px;letter-spacing:.16em;}
+  .env-sign{
+    left:7%;width:44%;max-width:44%;white-space:normal;
+    font-size:8.2px;letter-spacing:0;line-height:1.65;
+    bottom:calc(clamp(10px,1.05vw,13px) + 6px);
+  }
   .gate-row{flex-wrap:wrap;gap:10px;}
   #gateCode{width:180px;}
   .gr-l1,.gr-l2{font-size:clamp(38px,13.5vw,64px);}
@@ -192,11 +246,22 @@ html.is-locked{overflow:hidden;}
     <div class="gate-inner">
     <div class="envelope" id="envelope">
       <div class="env-body">
+        <div class="env-cloth" aria-hidden="true"></div>
         <div class="env-lines" aria-hidden="true"></div>
+        <div class="env-weave env-weave--b" aria-hidden="true"></div>
+        <div class="env-weave env-weave--l" aria-hidden="true"></div>
+        <div class="env-weave env-weave--r" aria-hidden="true"></div>
         <div class="env-addr">
+          <svg class="env-star" viewBox="0 0 40 40" aria-hidden="true">
+            <g fill="none" stroke="currentColor" stroke-width="1.2">
+              <path d="M20 3.5 L24.2 15.8 L36.5 20 L24.2 24.2 L20 36.5 L15.8 24.2 L3.5 20 L15.8 15.8 Z"/>
+              <circle cx="20" cy="20" r="4.6"/>
+            </g>
+            <circle cx="20" cy="20" r="1.3" fill="currentColor"/>
+          </svg>
           <p class="env-to">高淑琴院长<em>亲启</em></p>
-          <p class="env-from">云南民族大学马笛红色音乐剧原创团队 · 敬呈</p>
         </div>
+        <p class="env-sign">云南民族大学马笛红色音乐剧<br>原创团队 · 敬呈</p>
       </div>
       <div class="env-flap" id="envFlap" aria-hidden="true"></div>
       <div class="env-seal" aria-hidden="true"><span>启</span></div>
